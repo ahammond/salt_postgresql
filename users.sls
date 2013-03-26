@@ -3,6 +3,6 @@
   postgres_user.present:
     runas: postgres
     {% for k, v in user.items() %}
-    {{ k }}: {{ v }}
+    - {{ k }}: {{ v }}
     {% endfor %}
 {% endfor %}
