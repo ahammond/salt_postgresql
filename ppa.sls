@@ -1,28 +1,20 @@
-{% set pg_key_url = 'http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc' %}
-{% set pg_list = '/etc/apt/sources.list.d/postgresql.list' %}
 {% set pg_pref = '/etc/apt/preferences.d/pgdg.pref' %}
 
+deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main:
+  pkgrepo.managed:
+    - dist: precise
+    - file: /etc/apt/sources.list.d/postgresql.list
+    - keyid: ACCC4CF8
+    - keyserver: keys.gnupg.net
 
-add_postgresql_apt_key:
-  cmd.run:
-    - name: wget -O - {{ pg_key_url }} | apt-key add -
-    - unless: sudo apt-key list | grep -q 'PostgreSQL Debian Repository'
-
-
-{% for file in [pg_list, pg_pref] %}
-{{ file }}:
+{{ pg_pref }}:
   file.managed:
-    - source: salt://postgresql/files{{ file }}
-    - user: root
-    - group: root
-    - mode: 0644
+    - source: salt://postgresql/files{{ pg_pref }}
     - require:
-      - cmd: add_postgresql_apt_key
-{% endfor %}
-
+      - pkgrepo: deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main
 
 update_apt:
   cmd.wait:
     - name: apt-get update
     - watch:
-      - file: {{ pg_list }}
+      - file: /etc/apt/sources.list.d/*
