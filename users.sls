@@ -1,8 +1,8 @@
-{% for user, args in pillar['postgresql']['users'].items() %}
+{% for user in pillar['postgresql']['users'] %}
 {{ user }}:
   postgres_user.present:
     runas: postgres
-    {% for k, v in args.items() %}
+    {% for k, v in user.items() %}
     {{ k }}: {{ v }}
     {% endfor %}
 {% endfor %}
