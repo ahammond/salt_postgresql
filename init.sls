@@ -1,10 +1,6 @@
 include:
   - postgresql.ppa
 
-{% set pg_list = '/etc/apt/sources.list.d/postgresql.list' %}
-{% set pg_pref = '/etc/apt/preferences.d/pgdg.pref' %}
-
-
 postgresql_packages:
   pkg.installed:
     - pkgs:
@@ -15,10 +11,8 @@ postgresql_packages:
       - postgresql-server-dev-9.2
       - pgdg-keyring
     - require:
-      - cmd.run: add_postgresql_apt_key
-      - file: {{ pg_list }}
-      - file: {{ pg_pref }}
-
+      - pkgrepo: {{ ppa }}
+      - cmd: update_apt
 
 {% set postgresql_conf = '/etc/postgresql/9.2/main/postgresql.conf' %}
 {{ postgresql_conf }}:
@@ -27,22 +21,29 @@ postgresql_packages:
     - template: jinja
     - user: postgres
     - group: postgres
-    - mode: 0644
     - require:
       - pkg: postgresql_packages
 
-
+{% set sysctl = '/etc/sysctl.d/30-postgresql.conf' %}
 {% set mem = 8192 if 8192 < (grains['mem_total'] / 4) else (grains['mem_total'] / 4) %}
+{% set shmmax = (1024**2 * mem * 1.1)|int %}
 kernel.shmmax:
   sysctl.present:
-    - value: {{ (1024**2 * mem * 1.1)|int }}
+    - config: {{ sysctl }}
+    - value: {{ shmmax }}
 
+# shmall = ceil(shmmax / pagesize)
+{% shmall =  1 + (shmmax / 4096)|int %}
+kernel.shmall:
+  sysctl.present:
+    - config: {{ systcl }}
+    - value: {{ shmall }}
 
 postgresql:
-  service:
-    - running
+  service.running:
     - require:
       - sysctl: kernel.shmmax
+      - sysctl: kernel.shmall
       - pkg: postgresql_packages
     - watch:
       - file: {{ postgresql_conf }}
