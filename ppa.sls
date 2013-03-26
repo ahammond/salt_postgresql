@@ -1,11 +1,11 @@
 {% set pg_pref = '/etc/apt/preferences.d/pgdg.pref' %}
 
-deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main:
+deb http://ppa.launchpad.net/pitti/postgresql/ubuntu precise main:
   pkgrepo.managed:
     - dist: precise
     - file: /etc/apt/sources.list.d/postgresql.list
-    - keyid: ACCC4CF8
-    - keyserver: keys.gnupg.net
+    - keyid: FB322597BBC86D52FEE950E299B656EA8683D8A2
+    - keyserver: keyserver.ubuntu.com
 
 {{ pg_pref }}:
   file.managed:
