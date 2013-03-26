@@ -1,6 +1,7 @@
 {% set pg_pref = '/etc/apt/preferences.d/pgdg.pref' %}
+{% set ppa = 'deb http://ppa.launchpad.net/pitti/postgresql/ubuntu precise main' %}
 
-deb http://ppa.launchpad.net/pitti/postgresql/ubuntu precise main:
+{{ ppa }}
   pkgrepo.managed:
     - dist: precise
     - file: /etc/apt/sources.list.d/postgresql.list
@@ -11,10 +12,13 @@ deb http://ppa.launchpad.net/pitti/postgresql/ubuntu precise main:
   file.managed:
     - source: salt://postgresql/files{{ pg_pref }}
     - require:
-      - pkgrepo: deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main
+      - pkgrepo: {{ ppa }}
 
 update_apt:
   cmd.wait:
     - name: apt-get update
+    - require:
+      - pkgrepo: {{ ppa }}
+      - file: {{ pg_perf }}
     - watch:
       - file: /etc/apt/sources.list.d/*
