@@ -17,8 +17,7 @@ patch:
   file.managed:
     - source: salt://postgresql/files{{ pgdg_gpg_key }}
 
-{% set pgdg_repo = 'pgdg-92-centos' %}
-{{ pgdg_repo }}:
+{{ postgresql.pgdg_repo }}:
   pkgrepo.managed:
     - humanname: PostgreSQL 9.2 $releasever - $basearch
     - baseurl: http://yum.postgresql.org/9.2/redhat/rhel-$releasever-$basearch
@@ -26,18 +25,4 @@ patch:
     - gpgkey: file://{{ pgdg_gpg_key }}
     - require:
       - file: {{ pgdg_gpg_key }}
-
-{{ postgresql.pkg }}:
-  pkg.installed:
-    - require:
-      - pkgrepo: {{ pgdg_repo }}
       - file: {{ centos_base_repo }}
-
-{% if postgresql.initdb %}
-# CentOS requires us to manually run initdb, which is probably a good idea, but... mildly annoying.
-service postgresql-9.2 initdb:
-  cmd.run:
-    - unless: test -d {{ postgresql.pgdata }}/base
-    - require:
-      - pkg: {{ postgresql.pkg }}
-{% endif %}

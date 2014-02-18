@@ -3,6 +3,20 @@
 include:
   - {{ postgresql.repository }}
 
+{{ postgresql.server_pkg }}:
+  pkg.installed:
+    - require:
+      - pkgrepo: {{ postgresql.pgdg_repo }}
+
+{% if postgresql.initdb %}
+# CentOS requires us to manually run initdb, which is probably a good idea, but... mildly annoying.
+service postgresql-9.2 initdb:
+  cmd.run:
+    - unless: test -d {{ postgresql.pgdata }}/base
+    - require:
+      - pkg: {{ postgresql.pkg }}
+{% endif %}
+
 {{ postgresql.conf }}:
   file.managed:
     - source: salt://postgresql/files{{ postgresql.conf }}
@@ -10,7 +24,7 @@ include:
     - user: postgres
     - group: postgres
     - require:
-      - pkg: {{ postgresql.pkg }}
+      - pkg: {{ postgresql.server_pkg }}
 
 {{ postgresql.log_dir }}:
   file.directory:
@@ -35,7 +49,7 @@ include:
 postgresql:
   service.running:
     - require:
-      - pkg: {{ postgresql.pkg }}
+      - pkg: {{ postgresql.server_pkg }}
       - cron: {{ trim_log_cron }}
       - cron: {{ trim_wal_archive }}
     - watch:

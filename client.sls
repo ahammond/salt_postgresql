@@ -1,7 +1,9 @@
-include:
-  - postgresql.ppa
+{% from 'postgresql/map.jinja' import postgresql with context %}
 
-postgresql-client-9.2:
+include:
+  - {{ postgresql.repository }}
+
+{{ postgresql.client_pkg }}:
   pkg.installed:
     - require:
-      - cmd: update_apt
+      - pkgrepo: {{ postgresql.pgdg_repo }}

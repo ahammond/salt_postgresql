@@ -1,8 +1,8 @@
 {% from 'postgresql/map.jinja' import postgresql with context %}
 # Install and configure pgbadger to run in incremental mode
 
-{% set pgbadger_tarball = "/usr/src/pgbadger-v5.0.tar.gz" %}
 {% set pgbadger_url = "https://codeload.github.com/dalibo/pgbadger/tar.gz/v5.0" %}
+{% set pgbadger_tarball = "/usr/src/pgbadger-v5.0.tar.gz" %}
 {{ pgbadger_tarball }}:
   file.managed:
     - source: {{ pgbadger_url }}
@@ -68,4 +68,3 @@ make install:
     - user: postgres
     - minute: random
     - hour: '*/2'
-#}
