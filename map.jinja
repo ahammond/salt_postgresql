@@ -1,6 +1,6 @@
 {% set postgresql = salt['grains.filter_by']({
     'Debian': {
-        'repository': 'postgresql.ppa',
+        'repository': 'postgresql.ubuntu',
         'pkg': 'postgresql-9.2',
         'pgdata': '/var/lib/postgresql/9.2/main',
         'conf': '/etc/postgresql/9.2/main/postgresql.conf',
