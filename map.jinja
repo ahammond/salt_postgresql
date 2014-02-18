@@ -1,0 +1,21 @@
+{% set postgresql = salt['grains.filter_by']({
+    'Debian': {
+        'repository': 'postgresql.ppa',
+        'pkg': 'postgresql-9.2',
+        'pgdata': '/var/lib/postgresql/9.2/main',
+        'conf': '/etc/postgresql/9.2/main/postgresql.conf',
+        'log_dir': '/var/log/postgresql',
+    },
+    'RedHat': {
+        'repository': 'postgresql.centos',
+        'initdb': False,
+        'pkg': 'postgresql92-server',
+        'pgdata': '/var/lib/pgsql/9.2/data',
+        'conf': '/var/lib/pgsql/9.2/data/postgresql.conf',
+        'log_dir': '/var/log/postgresql',
+        'log_retention_days': 14,
+        'wal_archive': '/var/lib/pg_xlog/wal_archive',
+        'wal_archive_retention_days': 2,
+        'pgbadger_outdir': '/var/www/postgresql',
+    }
+}, merge=salt['pillar.get']('postgresql:lookup')) %}
