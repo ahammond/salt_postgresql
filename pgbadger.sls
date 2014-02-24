@@ -7,7 +7,7 @@
   file.managed:
     - source: {{ pgbadger_url }}
     - source_hash: md5=c33fcaf70728037e64225616d557340d
-    - owner: nobody
+    - user: nobody
 
 {% set pgbadger_src_dir = "/usr/src/pgbadger-5.0" %}
 {{ pgbadger_src_dir }}:
@@ -67,4 +67,4 @@ make install:
   cron.present:
     - user: postgres
     - minute: random
-    - hour: '*/2'
+    - hour: '*'

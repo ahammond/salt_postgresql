@@ -15,6 +15,8 @@ service postgresql-9.2 initdb:
     - unless: test -d {{ postgresql.pgdata }}/base
     - require:
       - pkg: {{ postgresql.pkg }}
+      - file: {{ postgresql.log_dir }}
+      - file: {{ postgresql.pgdata }}
 {% endif %}
 
 {{ postgresql.conf }}:
