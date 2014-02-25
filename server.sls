@@ -48,8 +48,9 @@ service postgresql-9.2 initdb:
     - minute: random
     - hour: '*/4'
 
-postgresql:
+{{ postgresql.service_name }}:
   service.running:
+    - reload: True
     - require:
       - pkg: {{ postgresql.server_pkg }}
       - cron: {{ trim_log_cron }}

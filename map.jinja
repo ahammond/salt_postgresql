@@ -5,6 +5,7 @@
         'pgdata': '/var/lib/postgresql/9.2/main',
         'conf': '/etc/postgresql/9.2/main/postgresql.conf',
         'log_dir': '/var/log/postgresql',
+        'service_name': 'postgresql',
     },
     'RedHat': {
         'pgdg_repo': 'pgdg-92-centos',
@@ -19,5 +20,6 @@
         'wal_archive': '/var/lib/pg_xlog/wal_archive',
         'wal_archive_retention_days': 2,
         'pgbadger_outdir': '/var/www/postgresql',
+        'service_name': 'postgresql-9.2',
     }
 }, merge=salt['pillar.get']('postgresql:lookup')) %}
