@@ -8,6 +8,11 @@ include:
     - require:
       - pkgrepo: {{ postgresql.pgdg_repo }}
 
+postgresql92-contrib:
+  pkg.installed:
+    - require:
+      - pkgrepo: {{ postgresql.pgdg_repo }}
+
 {% if postgresql.initdb %}
 # CentOS requires us to manually run initdb, which is probably a good idea, but... mildly annoying.
 service postgresql-9.2 initdb:
