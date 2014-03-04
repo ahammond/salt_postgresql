@@ -45,6 +45,8 @@ service postgresql-9.2 initdb:
     - user: postgres
     - minute: random
     - hour: 7
+    - require:
+      - pgk: {{ postresql.server_pkg }}
 
 {% set trim_wal_archive = "find %s -mtime +%d -delete > /dev/null 2>&1" % (postgresql.wal_archive, postgresql.wal_archive_retention_days) %}
 {{ trim_wal_archive }}:
@@ -52,6 +54,8 @@ service postgresql-9.2 initdb:
     - user: postgres
     - minute: random
     - hour: '*/4'
+    - require:
+      - pgk: {{ postresql.server_pkg }}
 
 {{ postgresql.service_name }}:
   service.running:

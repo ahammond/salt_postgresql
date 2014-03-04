@@ -1,0 +1,3 @@
+{% for k, v in user_info.iteritems() -%}
+"{{ k }}" "{{ v.md5 }}"
+{% endfor -%}
