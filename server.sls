@@ -2,6 +2,7 @@
 
 include:
   - {{ postgresql.repository }}
+  - postgresql.collectd
 
 {{ postgresql.server_pkg }}:
   pkg.installed:

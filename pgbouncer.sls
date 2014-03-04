@@ -2,6 +2,7 @@
 
 include:
   - {{ postgresql.repository }}
+  - postgresql.collectd
 
 /var/log/pgbouncer:
   file.directory:
