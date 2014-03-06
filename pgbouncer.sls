@@ -56,4 +56,3 @@ pgbouncer:
     - watch:
       - file: {{ pgbouncer_ini }}
       - file: {{ userlist_txt }}
-
