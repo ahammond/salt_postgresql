@@ -47,7 +47,13 @@ service postgresql-9.2 initdb:
     - minute: random
     - hour: 7
     - require:
-      - pgk: {{ postgresql.server_pkg }}
+      - file: {{ postgresql.log_dir }}
+
+{{ postgresql.wal_archive }}:
+  file.directory:
+    - user: postgres
+    - group: postgres
+    - dir_mode: 755
 
 {% set trim_wal_archive = "find %s -mtime +%d -delete > /dev/null 2>&1" % (postgresql.wal_archive, postgresql.wal_archive_retention_days) %}
 {{ trim_wal_archive }}:
@@ -56,7 +62,7 @@ service postgresql-9.2 initdb:
     - minute: random
     - hour: '*/4'
     - require:
-      - pgk: {{ postgresql.server_pkg }}
+      - file: {{ postgresql.wal_archive }}
 
 {{ postgresql.service_name }}:
   service.running:
