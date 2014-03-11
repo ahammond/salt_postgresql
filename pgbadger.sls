@@ -1,8 +1,10 @@
 {% from 'postgresql/map.jinja' import postgresql with context %}
+{% from 'nginx/map.jinja' import nginx with context %}
 # Install pgbadger to run in incremental mode
 
 include:
   - {{ postgresql.repository }}
+  - nginx
 
 pgbadger:
   pkg.installed:
@@ -23,3 +25,21 @@ pgbadger:
     - hour: '*'
     - require:
       - pkg: pgbadger
+
+{% set nginx_default = "/etc/nginx/conf.d/default.conf" %}
+{{ nginx_default }}:
+  file.absent:
+    - require:
+      - pkg: nginx
+
+{% set nginx_conf = "/etc/nginx/conf.d/pgbadger.conf" %}
+{{ nginx_conf }}:
+  file.managed:
+    - source: salt://postgresql/files{{ nginx_conf }}
+    - template: jinja
+    - user: nginx
+    - group: nginx
+    - pgbadger_outdir: {{ postgresql.pgbadger_outdir }}
+    - require:
+      - file: {{ postgresql.pgbadger_outdir }}
+      - file: {{ nginx_default }}
