@@ -17,7 +17,11 @@ pgbadger:
     - group: postgres
     - mode: 755
 
-{% set pgbadger_cron = "/usr/bin/pgbadger --quiet --incremental --jobs 8 --outdir %s --last-parsed %s/pgbadger_incremental_file.data `/bin/find %s -name '*.log' 2> /dev/null`" % (postgresql.pgbadger_outdir, postgresql.log_dir, postgresql.log_dir) %}
+{#
+## Use incremental mode, and only look at logfiles that were modified in the last 1.5 hours
+## Since we're running hourly, this should be enough of a look-back window.
+#}
+{% set pgbadger_cron = "/usr/bin/pgbadger --quiet --incremental --jobs 8 --outdir %s --last-parsed %s/pgbadger_incremental_file.data `/bin/find %s -mmin -90 -name '*.log' 2> /dev/null`" % (postgresql.pgbadger_outdir, postgresql.log_dir, postgresql.log_dir) %}
 {{ pgbadger_cron }}:
   cron.present:
     - user: postgres
