@@ -54,7 +54,7 @@ pgbouncer:
     - system: True
     - gid_from_name: True
     - password: !
-    - shell: /sbin/nologin
+    - shell: /bin/sh
     - home: /home/pgbouncer
     - createhome: True
   pkg.installed:
