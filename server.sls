@@ -73,3 +73,25 @@ service postgresql-9.2 initdb:
       - cron: {{ trim_wal_archive }}
     - watch:
       - file: {{ postgresql.conf }}
+
+{#
+## For every database, if this is the master, handle extensions, etc
+#}
+{% for dbname, blob in pillar['postgresql']['databases'] | dictsort %}
+{%   if blob.get('master', {}).get('host', '') in grains.get('ipv4') %}
+{%     set db_port = blob.get('master', {}).get('port', 5432) %}
+# I'm the master for this DB, so... manage some stuff.
+{%     for user, user_blob in pillar['postgresql'].get('users', {}) | dictsort %}
+{%       if user in blob.get('users', []) %}
+postgres_user_{{ user }}:
+  postgres_user.present:
+    - db_port: {{ db_port }}
+    - name: {{ user }}
+    - password: {{ user_blob['password'] }}
+{%         for k, v in user_blob.get('permissions', {}) | dictsort %}
+    - {{ k }}: {{ v }}
+{%         endfor %}
+{%       endif %}
+{%     endfor %}
+{%   endif %}
+{% endfor %}
