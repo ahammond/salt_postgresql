@@ -22,6 +22,20 @@ include:
     - databases: {{ pillar['postgresql']['databases'] }}
     - pgbouncer_config: {{ pillar['postgresql']['pgbouncer'] }}
     - require:
+      - pkg: pgbouncer
+      - user: pgbouncer
+
+{% set pgbouncer_transaction_ini = '/etc/pgbouncer/pgbouncer_transaction.ini' %}
+{{ pgbouncer_transaction_ini }}:
+  file.managed:
+    - source: salt://postgresql/files{{ pgbouncer_ini }}
+    - template: jinja
+    - user: pgbouncer
+    - mode: 644
+    - databases: {{ pillar['postgresql']['databases'] }}
+    - pgbouncer_config: {{ pillar['postgresql']['pgbouncer_transaction'] }}
+    - require:
+      - pkg: pgbouncer
       - user: pgbouncer
 
 {% set userlist_txt = '/etc/pgbouncer/userlist.txt' %}
@@ -56,3 +70,10 @@ pgbouncer:
     - watch:
       - file: {{ pgbouncer_ini }}
       - file: {{ userlist_txt }}
+
+pgbouncer_transaction:
+  service.running:
+    - enable: True
+    - require:
+      - pkg: pgbouncer
+      - user: pgbouncer
