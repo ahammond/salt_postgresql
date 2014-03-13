@@ -1,0 +1,9 @@
+# pgbouncer defaults
+#
+
+# Path to the init file
+BOUNCERCONF=/etc/pgbouncer/{{ pgbouncer_name }}.ini
+
+# Path to the log file
+BOUNCERLOG=/var/log/pgbouncer/{{ pgbouncer_name }}.log
+
