@@ -54,6 +54,7 @@ service postgresql-9.2 initdb:
     - user: postgres
     - group: postgres
     - dir_mode: 755
+    - makedirs: True
 
 {% set trim_wal_archive = "find %s -mtime +%d -delete > /dev/null 2>&1" % (postgresql.wal_archive, postgresql.wal_archive_retention_days) %}
 {{ trim_wal_archive }}:
@@ -77,8 +78,8 @@ service postgresql-9.2 initdb:
 {#
 ## For every database, if this is the master, handle extensions, etc
 #}
-{% for dbname, blob in pillar['postgresql']['databases'] | dictsort %}
-{%   if blob.get('master', {}).get('host', '') in grains.get('ipv4') %}
+{% for dbname, blob in pillar.get('postgresql', {}).get('databases', {}) | dictsort %}
+{%   if blob.get('master', {}).get('host', '') in grains.get('ipv4', '') %}
 {%     set db_port = blob.get('master', {}).get('port', 5432) %}
 # I'm the master for this DB, so... manage some stuff.
 {%     for user, user_blob in pillar['postgresql'].get('users', {}) | dictsort %}

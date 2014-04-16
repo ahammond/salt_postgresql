@@ -16,6 +16,7 @@ pgbadger:
     - user: postgres
     - group: postgres
     - mode: 755
+    - makedirs: True
 
 {#
 ## Use incremental mode, and only look at logfiles that were modified in the last 1.5 hours

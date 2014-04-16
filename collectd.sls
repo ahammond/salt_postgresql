@@ -3,7 +3,7 @@
   file.managed:
     - source: salt://postgresql/files{{ pg_collectd }}
     - template: jinja
-    - databases: {{ grains['databases'] }}
+    - databases: {{ grains.get('databases', []) }}
 
 {% set contextswitch = '/etc/collectd.d/contextswitch.conf' %}
 {{ contextswitch }}:
