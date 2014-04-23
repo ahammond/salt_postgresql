@@ -84,7 +84,7 @@ service postgresql-9.2 initdb:
 # I'm the master for this DB, so... manage some stuff.
 {%     for user, user_blob in pillar['postgresql'].get('users', {}) | dictsort %}
 {%       if user in blob.get('users', []) %}
-postgres_user_{{ user }}:
+postgres_{{ db_port }}_user_{{ user }}:
   postgres_user.present:
     - db_port: {{ db_port }}
     - name: {{ user }}
