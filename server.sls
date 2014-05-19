@@ -4,8 +4,12 @@ include:
   - {{ postgresql.repository }}
   - postgresql.collectd
 
-{{ postgresql.server_pkg }}:
+postgresql_packages:
   pkg.installed:
+    - pkgs:
+      - {{ postgresql.server_pkg }}
+      - postgresql92-contrib
+      - postgresql92-odbc
     - require:
       - pkgrepo: {{ postgresql.pgdg_repo }}
 
@@ -20,7 +24,7 @@ service postgresql-9.2 initdb:
   cmd.run:
     - unless: test -d {{ postgresql.pgdata }}/base
     - require:
-      - pkg: {{ postgresql.pkg }}
+      - pkg: postgresql_packages
       - file: {{ postgresql.log_dir }}
       - file: {{ postgresql.pgdata }}
 {% endif %}
@@ -32,7 +36,7 @@ service postgresql-9.2 initdb:
     - user: postgres
     - group: postgres
     - require:
-      - pkg: {{ postgresql.server_pkg }}
+      - pkg: postgresql_packages
 
 {{ postgresql.log_dir }}:
   file.directory:
@@ -67,9 +71,10 @@ service postgresql-9.2 initdb:
 
 {{ postgresql.service_name }}:
   service.running:
+    - enable: True
     - reload: True
     - require:
-      - pkg: {{ postgresql.server_pkg }}
+      - pkg: postgresql_packages
       - cron: {{ trim_log_cron }}
       - cron: {{ trim_wal_archive }}
     - watch:
