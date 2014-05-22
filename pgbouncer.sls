@@ -1,9 +1,11 @@
 {% from 'postgresql/map.jinja' import postgresql with context %}
+{% from 'zabbix/map.jinja' import zabbix with context %}
 
 include:
   - {{ postgresql.repository }}
   - postgresql.collectd
   - postgresql.check_postgres
+  - zabbix.agent
 
 /var/log/pgbouncer:
   file.directory:
@@ -69,6 +71,14 @@ pgbouncer:
     - pgbouncer_name: {{ pgbouncer_name }}
     - require:
       - pkg: pgbouncer
+
+
+{{ zabbix.conf_dir }}/pgbouncer.conf:
+  file.managed:
+    - source: salt://postgresql/files/etc/zabbix/zabbix_agentd.d/pgbouncer.conf
+    - template: jinja
+    - require:
+      - file: {{ zabbix.conf_dir }}
 
 {{ pgbouncer_name }}_service:
   service.running:

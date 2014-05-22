@@ -1,8 +1,10 @@
 {% from 'postgresql/map.jinja' import postgresql with context %}
+{% from 'zabbix/map.jinja' import zabbix with context %}
 
 include:
   - {{ postgresql.repository }}
   - postgresql.collectd
+  - zabbix
 
 postgresql_packages:
   pkg.installed:
@@ -17,6 +19,13 @@ postgresql92-contrib:
   pkg.installed:
     - require:
       - pkgrepo: {{ postgresql.pgdg_repo }}
+
+{{ zabbix.conf_dir }}/postgresql.conf:
+  file.managed:
+    - source: salt://postgresql/files/etc/zabbix/zabbix_agentd.d/postgresql.conf
+    - template: jinja
+    - require:
+      - file: {{ zabbix.conf_dir }}
 
 {% if postgresql.initdb %}
 # CentOS requires us to manually run initdb, which is probably a good idea, but... mildly annoying.
