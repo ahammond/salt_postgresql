@@ -91,6 +91,8 @@ service postgresql-9.2 initdb:
 {%       if user in blob.get('users', []) %}
 postgres_{{ db_port }}_user_{{ user }}:
   postgres_user.present:
+    - require_in:
+      - service: {{ postgresql.service_name }}
     - db_port: {{ db_port }}
     - name: {{ user }}
     - password: {{ user_blob['password'] }}
