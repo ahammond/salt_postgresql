@@ -21,5 +21,7 @@
         'wal_archive_retention_days': 2,
         'pgbadger_outdir': '/var/www/postgresql',
         'service_name': 'postgresql-9.2',
+        'home': '/var/lib/pgsql',
+        'user': 'postgres',
     }
 }, merge=salt['pillar.get']('postgresql:lookup')) %}
