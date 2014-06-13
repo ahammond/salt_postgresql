@@ -4,7 +4,7 @@
 include:
   - {{ postgresql.repository }}
   - postgresql.collectd
-  - zabbix
+  - zabbix.agent
 
 postgresql_packages:
   pkg.installed:
