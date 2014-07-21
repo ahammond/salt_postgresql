@@ -72,12 +72,13 @@ pgbouncer:
     - require:
       - pkg: pgbouncer
 
-{{ zabbix.conf_dir }}/pgbouncer.conf:
+{{ zabbix.conf_dir }}/{{ pgbouncer_name }}.conf:
   file.managed:
     - source: salt://postgresql/files/etc/zabbix/zabbix_agentd.d/pgbouncer.conf
     - template: jinja
     - require:
       - file: {{ zabbix.conf_dir }}
+    - pgbouncer_name: {{ pgbouncer_name }}
     - pgbouncer_config: {{ pgbouncer_config }}
     - zabbix: {{ zabbix }}
 
