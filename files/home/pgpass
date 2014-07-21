@@ -1,0 +1,6 @@
+# host:port:dbname:username:password
+{%  for username, blob in pillar.get('postgresql', {}).get('users', {}) | dictsort -%}
+{%    if blob.get('is_application', False) or unix_user is defined and username == unix_user or is_postgresql_admin -%}
+*:*:*:{{ username }}:{{ blob.get('password', '') }}
+{%    endif -%}
+{%  endfor -%}

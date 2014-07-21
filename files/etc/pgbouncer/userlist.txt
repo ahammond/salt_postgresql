@@ -1,0 +1,5 @@
+{% for k, v in user_info|dictsort -%}
+{% if 'md5' in v -%}
+"{{ k }}" "{{ v.md5 }}"
+{% endif -%}
+{% endfor -%}

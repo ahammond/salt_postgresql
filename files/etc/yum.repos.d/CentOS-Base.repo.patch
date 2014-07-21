@@ -1,0 +1,18 @@
+--- CentOS-Base.repo.original 2014-02-13 16:35:22.548965999 -0800
++++ CentOS-Base.repo  2014-02-13 16:35:55.672965868 -0800
+@@ -16,6 +16,7 @@
+ #baseurl=http://mirror.centos.org/centos/$releasever/os/$basearch/
+ gpgcheck=1
+ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
++exclude=postgresql*
+ 
+ #released updates 
+ [updates]
+@@ -24,6 +25,7 @@
+ #baseurl=http://mirror.centos.org/centos/$releasever/updates/$basearch/
+ gpgcheck=1
+ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
++exclude=postgresql*
+ 
+ #additional packages that may be useful
+ [extras]
